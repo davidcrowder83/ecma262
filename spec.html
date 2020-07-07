@@ -4207,15 +4207,6 @@
       <p>A <dfn id="super-reference">Super Reference</dfn> is a Reference that is used to represent a name binding that was expressed using the super keyword. A Super Reference has an additional thisValue component, and its base value component will never be an Environment Record.</p>
       <p>The following abstract operations are used in this specification to operate on references:</p>
 
-      <emu-clause id="sec-getbase" aoid="GetBase" oldids="ao-getbase">
-        <h1>GetBase ( _V_ )</h1>
-        <p>The abstract operation GetBase takes argument _V_. It performs the following steps when called:</p>
-        <emu-alg>
-          1. Assert: Type(_V_) is Reference.
-          1. Return the base value component of _V_.
-        </emu-alg>
-      </emu-clause>
-
       <emu-clause id="sec-getreferencedname" aoid="GetReferencedName" oldids="ao-getreferencedname">
         <h1>GetReferencedName ( _V_ )</h1>
         <p>The abstract operation GetReferencedName takes argument _V_. It performs the following steps when called:</p>
@@ -4276,7 +4267,7 @@
         <emu-alg>
           1. ReturnIfAbrupt(_V_).
           1. If Type(_V_) is not Reference, return _V_.
-          1. Let _base_ be GetBase(_V_).
+          1. Let _base_ be _V_.[[Base]].
           1. If IsUnresolvableReference(_V_) is *true*, throw a *ReferenceError* exception.
           1. If IsPropertyReference(_V_) is *true*, then
             1. If HasPrimitiveBase(_V_) is *true*, then
@@ -4299,7 +4290,7 @@
           1. ReturnIfAbrupt(_V_).
           1. ReturnIfAbrupt(_W_).
           1. If Type(_V_) is not Reference, throw a *ReferenceError* exception.
-          1. Let _base_ be GetBase(_V_).
+          1. Let _base_ be _V_.[[Base]].
           1. If IsUnresolvableReference(_V_) is *true*, then
             1. If IsStrictReference(_V_) is *true*, then
               1. Throw a *ReferenceError* exception.
@@ -4328,7 +4319,7 @@
           1. Assert: IsPropertyReference(_V_) is *true*.
           1. If IsSuperReference(_V_) is *true*, then
             1. Return the value of the thisValue component of the reference _V_.
-          1. Return GetBase(_V_).
+          1. Return _V_.[[Base]].
         </emu-alg>
       </emu-clause>
 
@@ -4340,7 +4331,7 @@
           1. ReturnIfAbrupt(_W_).
           1. Assert: Type(_V_) is Reference.
           1. Assert: IsUnresolvableReference(_V_) is *false*.
-          1. Let _base_ be GetBase(_V_).
+          1. Let _base_ be _V_.[[Base]].
           1. Assert: _base_ is an Environment Record.
           1. Return _base_.InitializeBinding(GetReferencedName(_V_), _W_).
         </emu-alg>
@@ -13805,7 +13796,7 @@
               1. Let _thisValue_ be GetThisValue(_ref_).
             1. Else,
               1. Assert: the base of _ref_ is an Environment Record.
-              1. Let _refEnv_ be GetBase(_ref_).
+              1. Let _refEnv_ be _ref_.[[Base]].
               1. Let _thisValue_ be _refEnv_.WithBaseObject().
           1. Else,
             1. Let _thisValue_ be *undefined*.
@@ -14350,14 +14341,14 @@
             1. Return *true*.
           1. If IsPropertyReference(_ref_) is *true*, then
             1. If IsSuperReference(_ref_) is *true*, throw a *ReferenceError* exception.
-            1. Let _baseObj_ be ! ToObject(GetBase(_ref_)).
             1. Let _deleteStatus_ be ? _baseObj_.[[Delete]](GetReferencedName(_ref_)).
+            1. Let _baseObj_ be ! ToObject(_ref_.[[Base]]).
             1. If _deleteStatus_ is *false* and IsStrictReference(_ref_) is *true*, throw a *TypeError* exception.
             1. Return _deleteStatus_.
           1. Else,
             1. Assert: _ref_ is a Reference to an Environment Record binding.
-            1. Let _bindings_ be GetBase(_ref_).
             1. Return ? _bindings_.DeleteBinding(GetReferencedName(_ref_)).
+            1. Let _bindings_ be _ref_.[[Base]].
         </emu-alg>
         <emu-note>
           <p>When a `delete` operator occurs within strict mode code, a *SyntaxError* exception is thrown if its |UnaryExpression| is a direct reference to a variable, function argument, or function name. In addition, if a `delete` operator occurs within strict mode code and the property to be deleted has the attribute { [[Configurable]]: *false* }, a *TypeError* exception is thrown.</p>
