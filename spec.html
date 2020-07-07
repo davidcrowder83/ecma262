@@ -7235,10 +7235,10 @@
         <p>The abstract operation GetIdentifierReference takes arguments _env_ (an Environment Record or *null*), _name_ (a String), and _strict_ (a Boolean). It performs the following steps when called:</p>
         <emu-alg>
           1. If _env_ is the value *null*, then
-            1. Return a value of type Reference whose base value component is *undefined*, whose referenced name component is _name_, and whose strict reference flag is _strict_.
+            1. Return Reference { [[ReferencedName]]: _name_, [[Strict]]: _strict_ }.
           1. Let _exists_ be ? _env_.HasBinding(_name_).
           1. If _exists_ is *true*, then
-            1. Return a value of type Reference whose base value component is _env_, whose referenced name component is _name_, and whose strict reference flag is _strict_.
+            1. Return Reference { [[Base]]: _env_, [[ReferencedName]]: _name_, [[Strict]]: _strict_ }.
           1. Else,
             1. Let _outer_ be _env_.[[OuterEnv]].
             1. Return ? GetIdentifierReference(_outer_, _name_, _strict_).
@@ -13686,7 +13686,7 @@
         1. Let _propertyNameValue_ be ? GetValue(_propertyNameReference_).
         1. Let _bv_ be ? RequireObjectCoercible(_baseValue_).
         1. Let _propertyKey_ be ? ToPropertyKey(_propertyNameValue_).
-        1. Return a value of type Reference whose base value component is _bv_, whose referenced name component is _propertyKey_, and whose strict reference flag is _strict_.
+        1. Return Reference { [[Base]]: _bv_, [[ReferencedName]]: _propertyKey_, [[Strict]]: _strict_ }.
       </emu-alg>
     </emu-clause>
     <emu-clause id="sec-evaluate-property-access-with-identifier-key" aoid="EvaluatePropertyAccessWithIdentifierKey" oldids="sec-evaluate-identifier-key-property-access">
@@ -13696,7 +13696,7 @@
         1. Assert: _identifierName_ is an |IdentifierName|.
         1. Let _bv_ be ? RequireObjectCoercible(_baseValue_).
         1. Let _propertyNameString_ be StringValue of _identifierName_.
-        1. Return a value of type Reference whose base value component is _bv_, whose referenced name component is _propertyNameString_, and whose strict reference flag is _strict_.
+        1. Return Reference { [[Base]]: _bv_, [[ReferencedName]]: _propertyNameString_, [[Strict]]: _strict_ }.
       </emu-alg>
     </emu-clause>
 
@@ -13849,7 +13849,8 @@
           1. Assert: _env_.HasSuperBinding() is *true*.
           1. Let _baseValue_ be ? _env_.GetSuperBase().
           1. Let _bv_ be ? RequireObjectCoercible(_baseValue_).
-          1. Return a value of type Reference that is a Super Reference whose base value component is _bv_, whose referenced name component is _propertyKey_, whose thisValue component is _actualThis_, and whose strict reference flag is _strict_.
+          1. Return Reference { [[Base]]: _bv_, [[ReferencedName]]: _propertyKey_, [[Strict]]: _strict_, [[ThisValue]]: _actualThis_ }.
+          1. NOTE: This returns a Super Reference.
         </emu-alg>
       </emu-clause>
     </emu-clause>
