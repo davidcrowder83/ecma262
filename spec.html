@@ -4207,15 +4207,6 @@
       <p>A <dfn id="super-reference">Super Reference</dfn> is a Reference that is used to represent a name binding that was expressed using the super keyword. A Super Reference has an additional thisValue component, and its base value component will never be an Environment Record.</p>
       <p>The following abstract operations are used in this specification to operate on references:</p>
 
-      <emu-clause id="sec-isstrictreference" aoid="IsStrictReference" oldids="ao-isstrictreference">
-        <h1>IsStrictReference ( _V_ )</h1>
-        <p>The abstract operation IsStrictReference takes argument _V_. It performs the following steps when called:</p>
-        <emu-alg>
-          1. Assert: Type(_V_) is Reference.
-          1. Return the strict reference flag of _V_.
-        </emu-alg>
-      </emu-clause>
-
       <emu-clause id="sec-hasprimitivebase" aoid="HasPrimitiveBase" oldids="ao-hasprimitivebase">
         <h1>HasPrimitiveBase ( _V_ )</h1>
         <p>The abstract operation HasPrimitiveBase takes argument _V_. It performs the following steps when called:</p>
@@ -4267,7 +4258,7 @@
             1. Return ? _base_.[[Get]](_V_.[[ReferencedName]], GetThisValue(_V_)).
           1. Else,
             1. Assert: _base_ is an Environment Record.
-            1. Return ? _base_.GetBindingValue(_V_.[[ReferencedName]], IsStrictReference(_V_)) (see <emu-xref href="#sec-environment-records"></emu-xref>).
+            1. Return ? _base_.GetBindingValue(_V_.[[ReferencedName]], _V_.[[Strict]]) (see <emu-xref href="#sec-environment-records"></emu-xref>).
         </emu-alg>
         <emu-note>
           <p>The object that may be created in step <emu-xref href="#step-getvalue-toobject"></emu-xref> is not accessible outside of the above abstract operation and the ordinary object [[Get]] internal method. An implementation might choose to avoid the actual creation of the object.</p>
@@ -4283,7 +4274,7 @@
           1. If Type(_V_) is not Reference, throw a *ReferenceError* exception.
           1. Let _base_ be _V_.[[Base]].
           1. If IsUnresolvableReference(_V_) is *true*, then
-            1. If IsStrictReference(_V_) is *true*, then
+            1. If _V_.[[Strict]] is *true*, then
               1. Throw a *ReferenceError* exception.
             1. Let _globalObj_ be GetGlobalObject().
             1. Return ? Set(_globalObj_, _V_.[[ReferencedName]], _W_, *false*).
@@ -4292,11 +4283,11 @@
               1. Assert: In this case, _base_ will never be *undefined* or *null*.
               1. [id="step-putvalue-toobject"] Set _base_ to ! ToObject(_base_).
             1. Let _succeeded_ be ? _base_.[[Set]](_V_.[[ReferencedName]], _W_, GetThisValue(_V_)).
-            1. If _succeeded_ is *false* and IsStrictReference(_V_) is *true*, throw a *TypeError* exception.
+            1. If _succeeded_ is *false* and _V_.[[Strict]] is *true*, throw a *TypeError* exception.
             1. Return.
           1. Else,
             1. Assert: _base_ is an Environment Record.
-            1. Return ? _base_.SetMutableBinding(_V_.[[ReferencedName]], _W_, IsStrictReference(_V_)) (see <emu-xref href="#sec-environment-records"></emu-xref>).
+            1. Return ? _base_.SetMutableBinding(_V_.[[ReferencedName]], _W_, _V_.[[Strict]]) (see <emu-xref href="#sec-environment-records"></emu-xref>).
         </emu-alg>
         <emu-note>
           <p>The object that may be created in step <emu-xref href="#step-putvalue-toobject"></emu-xref> is not accessible outside of the above abstract operation and the ordinary object [[Set]] internal method. An implementation might choose to avoid the actual creation of that object.</p>
@@ -14328,13 +14319,13 @@
           1. ReturnIfAbrupt(_ref_).
           1. If Type(_ref_) is not Reference, return *true*.
           1. If IsUnresolvableReference(_ref_) is *true*, then
-            1. Assert: IsStrictReference(_ref_) is *false*.
+            1. Assert: _ref_.[[Strict]] is *false*.
             1. Return *true*.
           1. If IsPropertyReference(_ref_) is *true*, then
             1. If IsSuperReference(_ref_) is *true*, throw a *ReferenceError* exception.
             1. Let _baseObj_ be ! ToObject(_ref_.[[Base]]).
             1. Let _deleteStatus_ be ? _baseObj_.[[Delete]](_ref_.[[ReferencedName]]).
-            1. If _deleteStatus_ is *false* and IsStrictReference(_ref_) is *true*, throw a *TypeError* exception.
+            1. If _deleteStatus_ is *false* and _ref_.[[Strict]] is *true*, throw a *TypeError* exception.
             1. Return _deleteStatus_.
           1. Else,
             1. Assert: _ref_ is a Reference to an Environment Record binding.
