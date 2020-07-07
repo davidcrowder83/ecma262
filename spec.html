@@ -4274,8 +4274,7 @@
           1. If Type(_V_) is not Reference, throw a *ReferenceError* exception.
           1. Let _base_ be _V_.[[Base]].
           1. If IsUnresolvableReference(_V_) is *true*, then
-            1. If _V_.[[Strict]] is *true*, then
-              1. Throw a *ReferenceError* exception.
+            1. If _V_.[[Strict]] is *true*, throw a *ReferenceError* exception.
             1. Let _globalObj_ be GetGlobalObject().
             1. Return ? Set(_globalObj_, _V_.[[ReferencedName]], _W_, *false*).
           1. Else if IsPropertyReference(_V_) is *true*, then
