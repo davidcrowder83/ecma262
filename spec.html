@@ -4205,6 +4205,52 @@
       </emu-note>
       <p>A <dfn>Reference</dfn> is a resolved name or property binding. A Reference consists of three components, the base value component, the referenced name component, and the Boolean-valued strict reference flag. The base value component is either *undefined*, an Object, a Boolean, a String, a Symbol, a Number, a BigInt, or an Environment Record. A base value component of *undefined* indicates that the Reference could not be resolved to a binding. The referenced name component is a String or Symbol value.</p>
       <p>A <dfn id="super-reference">Super Reference</dfn> is a Reference that is used to represent a name binding that was expressed using the super keyword. A Super Reference has an additional thisValue component, and its base value component will never be an Environment Record.</p>
+
+      <emu-table id="table-reference-fields" caption="Reference Fields">
+        <table>
+          <tbody>
+            <tr>
+              <th>Field Name</th>
+              <th>Value</th>
+              <th>Meaning</th>
+            </tr>
+            <tr>
+              <td>[[Base]]</td>
+              <td>
+                One of:
+                <ul>
+                  <li>
+                    ECMAScript language value except *undefined* and *null*;
+                  </li>
+                  <li>
+                    Environment Record;
+                  </li>
+                  <li>
+                    ~empty~.
+                  </li>
+                </ul>
+              </td>
+              <td>~empty~ value indicates that the Reference could not be resolved to a binding.</td>
+            </tr>
+            <tr>
+              <td>[[ReferencedName]]</td>
+              <td>String or Symbol</td>
+              <td>Binding name. Always a String if [[Base]] value is an Environment Record.</td>
+            </tr>
+            <tr>
+              <td>[[Strict]]</td>
+              <td>Boolean</td>
+              <td>*true* if the Reference originated in strict mode code, *false* otherwise.</td>
+            </tr>
+            <tr>
+              <td>[[ThisValue]]</td>
+              <td>any ECMAScript language value or ~empty~</td>
+              <td>If not ~empty~, the Reference represents a name binding that was expressed using the `super` keyword; it is called a <dfn id="super-reference">Super Reference</dfn> and its [[Base]] value will never be an Environment Record.</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+
       <p>The following abstract operations are used in this specification to operate on references:</p>
 
       <emu-clause id="sec-hasprimitivebase" aoid="HasPrimitiveBase" oldids="ao-hasprimitivebase">
